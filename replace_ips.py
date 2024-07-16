@@ -1,4 +1,5 @@
 import re
+import base64
 
 def read_unique_ips(file_path):
     with open(file_path, 'r') as file:
@@ -21,18 +22,18 @@ def main():
     # Create new proxy strings with each unique IP
     new_proxies = [replace_ip_in_proxy(original_proxy, ip) for ip in unique_ips]
 
-    # Write the new proxy strings to a file
+    # Write the new proxy strings to 'new_proxies.txt'
     with open('new_proxies.txt', 'w') as file:
         for proxy in new_proxies:
             file.write(f"{proxy}\n")
 
-    encoded_proxies = base64.b64encode(new_proxies.encode()).decode()
-
-    # Write the base64 encoded proxies to a file
+    # Encode the new proxy strings in base64 and write to 'new_proxies64.txt'
     with open('new_proxies64.txt', 'w') as file:
-        file.write(encoded_proxies)
+        for proxy in new_proxies:
+            encoded_proxy = base64.b64encode(proxy.encode()).decode()
+            file.write(f"{encoded_proxy}\n")
 
-    print(f"New proxy strings have been saved to new_proxies.txt")
+    print(f"New proxy strings have been saved to new_proxies.txt and new_proxies64.txt")
 
 if __name__ == "__main__":
     main()
