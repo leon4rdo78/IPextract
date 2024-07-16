@@ -3,6 +3,12 @@ name: Update File and Extract IPs
 on:
   workflow_dispatch:
 
+  schedule:
+  - cron: '41 2 * * *'
+
+  push:
+    branches: [ main ]
+
 jobs:
   update:
     runs-on: ubuntu-latest
