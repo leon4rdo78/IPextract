@@ -75,6 +75,10 @@ jobs:
       run: |
         python extract_ips.py
 
+    - name: Split proxies file
+      run: |
+        python split_file.py
+
     - name: Check for changes
       id: changes
       run: |
