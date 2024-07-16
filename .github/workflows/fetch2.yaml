@@ -86,6 +86,30 @@ jobs:
       with:
         python-version: '3.x'
 
+    - name: Archive existing split files
+      run: |
+        # Create archive directory if it doesn't exist
+        mkdir -p split2/archive
+
+        # Get current timestamp
+        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+
+        # Check if there are files to archive
+        if [ "$(ls -A split2/*.txt 2>/dev/null)" ]; then
+          # Create a subdirectory in the archive with the timestamp
+          mkdir -p "split2/archive/$TIMESTAMP"
+          
+          # Move existing files to the archive
+          mv split2/*.txt "split2/archive/$TIMESTAMP/"
+          
+          echo "Archived existing files to split2/archive/$TIMESTAMP/"
+        else
+          echo "No files to archive in split2/ directory"
+        fi
+
+        # Clean up the split2/ directory (just in case)
+        rm -f split2/*.txt
+
     - name: Run IP extraction script
       run: |
         python extract_ips2.py
