@@ -27,11 +27,16 @@ def main():
         for proxy in new_proxies:
             file.write(f"{proxy}\n")
 
-    # Encode the new proxy strings in base64 and write to 'new_proxies64.txt'
+    # Read the entire content of 'new_proxies.txt'
+    with open('new_proxies.txt', 'r') as file:
+        new_proxies_content = file.read()
+
+    # Encode the entire content in base64
+    encoded_proxies = base64.b64encode(new_proxies_content.encode()).decode()
+
+    # Write the base64 encoded content to 'new_proxies64.txt'
     with open('new_proxies64.txt', 'w') as file:
-        for proxy in new_proxies:
-            encoded_proxy = base64.b64encode(proxy.encode()).decode()
-            file.write(f"{encoded_proxy}\n")
+        file.write(encoded_proxies)
 
     print(f"New proxy strings have been saved to new_proxies.txt and new_proxies64.txt")
 
