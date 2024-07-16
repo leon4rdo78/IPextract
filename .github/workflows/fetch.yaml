@@ -156,8 +156,13 @@ jobs:
         # Fetch latest changes
         git fetch origin main
         
-        # Rebase
-        git rebase origin/main
+        # Merge
+        git merge origin/main --no-edit
+        
+        # Push changes
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
         # Push changes
         git push
