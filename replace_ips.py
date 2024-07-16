@@ -22,7 +22,7 @@ def main():
     new_proxies = [replace_ip_in_proxy(original_proxy, ip) for ip in unique_ips]
 
     # Write the new proxy strings to a file
-    with open('new_proxies64.txt', 'w') as file:
+    with open('new_proxies.txt', 'w') as file:
         for proxy in new_proxies:
             file.write(f"{proxy}\n")
 
