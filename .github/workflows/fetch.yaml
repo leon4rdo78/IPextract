@@ -36,7 +36,7 @@ jobs:
           "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/base64/vmess"
           "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/base64/vless"
           "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vless_iran.txt"
-          https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vmess_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vmess_iran.txt"
           "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/xray/base64/vmess"
           "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/xray/base64/vless"
           "https://raw.githubusercontent.com/coldwater-10/V2Hub3/main/Split/Base64/vless"
