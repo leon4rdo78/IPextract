@@ -13,7 +13,7 @@ jobs:
 
     - name: Fetch and write file content
       run: |
-        curl -s "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/configtg.txt" > ips
+        curl -s "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/configtg.txt" > proxies.txt
 
     - name: Check for changes
       id: changes
