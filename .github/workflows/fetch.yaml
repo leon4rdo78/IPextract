@@ -23,9 +23,12 @@ jobs:
     - name: Commit and Push
       if: steps.changes.outputs.changed == 'true'   
       run: |
+    - name: Commit and Push
+      if: steps.changes.outputs.changed == 'true'   
+      run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
           timestamp=$(TZ='Asia/Tehran' date)
           git commit -m "✅Updated on ${timestamp}"
-          git push
+          git push https://${{ secrets.PAT }}@github.com/leon4rdo78/IPextract.git
