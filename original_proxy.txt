@@ -1,0 +1,1 @@
+vless://cd8002d9-e8fd-4411-8bb6-fc80310ff81d@104.21.61.43:2053?encryption=none&security=tls&sni=allin23.leon4rdo78.WOrkeRs.dEV&alpn=h3%2Ch2%2Chttp%2F1.1&fp=firefox&allowInsecure=1&type=ws&host=allin23.leon4rdo78.WOrkeRs.dEV&path=%2Fvip1-romax-tiktok.hsjsak.ir%3A2053%2Fvless-ws%2F%3Fed#%E2%99%BB%EF%B8%8F%20471-VA
