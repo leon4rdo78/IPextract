@@ -22,9 +22,7 @@ def main():
         for proxy in new_proxies:
             file.write(f"{proxy}\n")
 
-    # Combine all proxies into a single line and encode to base64
-    combined_proxies = ''.join(new_proxies)
-    encoded_proxies = base64.b64encode(combined_proxies.encode()).decode()
+    encoded_proxies = base64.b64encode(new_proxies.encode()).decode()
 
     # Write the base64 encoded proxies to a file
     with open('new_proxies64.txt', 'w') as file:
