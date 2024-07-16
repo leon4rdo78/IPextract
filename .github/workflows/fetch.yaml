@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
   schedule:
-  - cron: '41 2 * * *'
+    - cron: '41 2 * * *'
 
   push:
     branches: [ main ]
@@ -54,7 +54,6 @@ jobs:
           "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/splitted/vless"
           "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/splitted/vmess"
           "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/irc.txt"
-
           # Add more URLs as needed
         )
         
@@ -92,14 +91,13 @@ jobs:
     - name: Check for changes
       id: changes
       run: |
-        git diff --quiet && echo 'No changes' || echo '::set-output name=changed::true'   
+        git add proxies.txt new_proxies.txt new_proxies64.txt unique_ips.txt split/*.txt
+        git diff --cached --quiet && echo 'No changes' || echo '::set-output name=changed::true'   
       
     - name: Commit and Push
       if: steps.changes.outputs.changed == 'true'   
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add proxies.txt new_proxies.txt new_proxies64.txt
-        timestamp=$(TZ='Asia/Tehran' date)
-        git commit -m "✅Updated on ${timestamp}"
+        git commit -m "✅Updated on $(TZ='Asia/Tehran' date)"
         git push
