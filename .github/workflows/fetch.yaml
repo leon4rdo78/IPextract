@@ -11,9 +11,60 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Fetch and write file content
+    - name: Fetch, decode if needed, and combine file content
       run: |
-        curl -s "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/configtg.txt" > proxies.txt
+        # Initialize or clear the proxies.txt file
+        > proxies.txt
+        
+        # Function to check if a string is base64 encoded
+        is_base64() {
+          local string="$1"
+          echo "$string" | base64 -d > /dev/null 2>&1
+          return $?
+        }
+        
+        # List of URLs to fetch from
+        urls=(
+          "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/configtg.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2RayAggregator/master/Eternity"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorLire/main/ss_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorLire/main/vless_iran.txt"
+          "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/xray/base64/vmess"
+          "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/xray/base64/vless"
+          "https://raw.githubusercontent.com/yebekhe/V2Hub/main/Split/Base64/vmess"
+          "https://raw.githubusercontent.com/yebekhe/V2Hub/main/Split/Base64/vless"
+          "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/base64/vmess"
+          "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/base64/vless"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vless_iran.txt"
+          https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vmess_iran.txt"
+          "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/xray/base64/vmess"
+          "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/xray/base64/vless"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub3/main/Split/Base64/vless"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub3/main/Split/Base64/vmess"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub4/main/Split/Base64/vmess"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub4/main/Split/Base64/vless"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vmess_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vless_iran.txt"
+          "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/splitted/vless"
+          "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/splitted/vmess"
+          "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/irc.txt"
+
+          # Add more URLs as needed
+        )
+        
+        # Fetch from each URL, decode if necessary, and append to proxies.txt
+        for url in "${urls[@]}"; do
+          content=$(curl -s "$url")
+          if is_base64 "$content"; then
+            echo "Content from $url is base64 encoded. Decoding..."
+            echo "$content" | base64 -d >> proxies.txt
+          else
+            echo "Content from $url is not base64 encoded. Appending directly..."
+            echo "$content" >> proxies.txt
+          fi
+          # Add a newline after each file to separate content
+          echo "" >> proxies.txt
+        done
 
     - name: Set up Python
       uses: actions/setup-python@v2
