@@ -2,10 +2,8 @@ name: Update File and Extract IPs
 
 on:
   workflow_dispatch:
-
   schedule:
     - cron: '41 2 * * *'
-
   push:
     branches: [ main ]
 
@@ -16,68 +14,86 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Fetch all history for all branches and tags
+
+    - name: Set up Git
+      run: |
+        git config --global user.name 'GitHub Action'
+        git config --global user.email 'action@github.com'
 
     - name: Fetch, decode if needed, and combine file content
       run: |
-        {
-          # Initialize or clear the proxies.txt file
-          > proxies.txt
-          
-          # Function to check if a string is base64 encoded
-          is_base64() {
-            local string="$1"
-            echo "$string" | base64 -d > /dev/null 2>&1
-            return $?
-          }
-          
-          # List of URLs to fetch from
-          urls=(
-            "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/configtg.txt"
-            "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/irc.txt"
-            "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/mci.txt"
-            "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/mkb.txt"
-            "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/hy2.txt"
-            "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/xray/normal/mix"
-            "https://raw.githubusercontent.com/yebekhe/V2Hub/main/merged"
-            "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/base64/vmess"
-            "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/base64/vless"
-            "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/normal/mix"
-            "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/normal/donated"
-            "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vless_iran.txt"
-            "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vmess_iran.txt"
-            "https://raw.githubusercontent.com/coldwater-10/V2Hub3/main/merged"
-            "https://raw.githubusercontent.com/coldwater-10/V2Hub4/main/merged"
-            "https://raw.githubusercontent.com/coldwater-10/V2Hub5/main/merged"
-            "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorLire/main/ss_iran.txt"
-            "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorLire/main/vmess_iran.txt"
-            "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorLire/main/vless_iran.txt"
-            "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorLire/main/trojan_iran.txt"
-          )
-          
-          # Fetch from each URL, decode if necessary, and append to proxies.txt
-          for url in "${urls[@]}"; do
-            echo "Fetching from $url"
-            content=$(curl -s "$url")
-            if [ -n "$content" ]; then
-              if is_base64 "$content"; then
-                echo "Content is base64 encoded. Decoding..."
-                echo "$content" | base64 -d >> proxies.txt 2>/dev/null || echo "Failed to decode content from $url"
+        # Function to safely append content to a file
+        append_to_file() {
+          local content="$1"
+          local file="$2"
+          echo "$content" >> "$file"
+        }
+
+        # Initialize or clear the proxies.txt file
+        > proxies.txt
+        
+        # Function to check if a string is base64 encoded
+        is_base64() {
+          local string="$1"
+          echo "$string" | base64 -d > /dev/null 2>&1
+          return $?
+        }
+        
+        # List of URLs to fetch from
+        urls=(
+          "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/configtg.txt"
+          "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/irc.txt"
+          "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/mci.txt"
+          "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/mkb.txt"
+          "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/hy2.txt"
+          "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/xray/normal/mix"
+          "https://raw.githubusercontent.com/yebekhe/V2Hub/main/merged"
+          "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/base64/vmess"
+          "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/base64/vless"
+          "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/normal/mix"
+          "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/normal/donated"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vless_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vmess_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub3/main/merged"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub4/main/merged"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub5/main/merged"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorLire/main/ss_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorLire/main/vmess_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorLire/main/vless_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorLire/main/trojan_iran.txt"
+        )
+        
+        # Fetch from each URL, decode if necessary, and append to proxies.txt
+        for url in "${urls[@]}"; do
+          echo "Fetching from $url"
+          content=$(curl -s "$url")
+          if [ -n "$content" ]; then
+            if is_base64 "$content"; then
+              echo "Content is base64 encoded. Decoding..."
+              decoded_content=$(echo "$content" | base64 -d 2>/dev/null)
+              if [ $? -eq 0 ]; then
+                append_to_file "$decoded_content" proxies.txt
               else
-                echo "Content is not base64 encoded. Appending directly..."
-                echo "$content" >> proxies.txt
+                echo "Failed to decode content from $url"
               fi
-              # Add a newline after each file to separate content
-              echo "" >> proxies.txt
             else
-              echo "No content received from $url"
+              echo "Content is not base64 encoded. Appending directly..."
+              append_to_file "$content" proxies.txt
             fi
-          done
+            # Add a newline after each file to separate content
+            append_to_file "" proxies.txt
+          else
+            echo "No content received from $url"
+          fi
+        done
 
-          echo "Fetch and combine process completed."
-        } > fetch_log.txt 2>&1
-
-        echo "Fetch log:"
-        cat fetch_log.txt
+        echo "Fetch and combine process completed."
+        
+        # Display the first few lines of proxies.txt to verify content
+        echo "First 10 lines of proxies.txt:"
+        head -n 10 proxies.txt
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -86,6 +102,8 @@ jobs:
 
     - name: Archive existing split files
       run: |
+        echo "Current directory structure:"
+        ls -R
         # Create archive directory if it doesn't exist
         mkdir -p split/archive
 
@@ -107,6 +125,9 @@ jobs:
 
         # Clean up the split/ directory (just in case)
         rm -f split/*.txt
+        
+        echo "Directory structure after archiving:"
+        ls -R
 
     - name: Run IP extraction script
       run: |
@@ -123,13 +144,15 @@ jobs:
     - name: Check for changes
       id: changes
       run: |
-        git add proxies.txt new_proxies.txt new_proxies64.txt unique_ips.txt split/*.txt
+        git add proxies.txt new_proxies.txt new_proxies64.txt unique_ips.txt split/*.txt split/archive/
         git diff --cached --quiet && echo 'No changes' || echo '::set-output name=changed::true'   
       
     - name: Commit and Push
-      if: steps.changes.outputs.changed == 'true'   
+      if: steps.changes.outputs.changed == 'true'
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
+        git add proxies.txt new_proxies.txt new_proxies64.txt unique_ips.txt split/*.txt split/archive/
         git commit -m "✅Updated on $(TZ='Asia/Tehran' date)"
+        git pull --rebase origin main
         git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
