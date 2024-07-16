@@ -81,8 +81,9 @@ jobs:
 
     - name: Encrypt proxies.txt to base64
       run: |
-        base64 new_proxies.txt > new_proxies64.txt
-        echo "proxies.txt has been encoded to base64"
+        tr -d '\n' < new_proxies.txt > new_proxies_oneline.txt
+        base64 new_proxies_oneline.txt > new_proxies64.txt
+        echo "new_proxies.txt has been encoded to base64"
 
     - name: Split proxies file
       run: |
