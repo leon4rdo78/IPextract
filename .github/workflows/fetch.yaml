@@ -92,6 +92,12 @@ jobs:
         
         echo "All lines from proxies.txt have been combined into one line, encoded to base64, and saved as new_proxies64.txt"
 
+    - name: Clean up temporary files
+      run: |
+        if [ -f new_proxies_oneline.txt ]; then
+          rm new_proxies_oneline.txt
+        fi
+
     - name: Split proxies file
       run: |
         python split_file.py
