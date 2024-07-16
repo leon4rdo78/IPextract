@@ -79,25 +79,6 @@ jobs:
       run: |
         python replace_ips.py
 
-    - name: Combine lines and encrypt to base64
-      run: |
-        # Combine all lines into one
-        tr -d '\n' < new_proxies.txt > new_proxies_oneline.txt
-        
-        # Encode the single-line file to base64
-        base64 new_proxies_oneline.txt > new_proxies64.txt
-        
-        # Clean up the temporary file
-        rm new_proxies_oneline.txt
-        
-        echo "All lines from new_proxies.txt have been combined into one line, encoded to base64, and saved as new_proxies64.txt"
-
-    - name: Clean up temporary files
-      run: |
-        if [ -f new_proxies_oneline.txt ]; then
-          rm new_proxies_oneline.txt
-        fi
-
     - name: Split proxies file
       run: |
         python split_file.py
