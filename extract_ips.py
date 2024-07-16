@@ -21,7 +21,7 @@ def extract_unique_ips(file_path):
                     ipaddress.ip_address(ip)
                     unique_ips.add(ip)
                 except ValueError:
-                    print(f"Invalid IP address found: {ip}")
+                    continue
 
     return sorted(unique_ips)
 
