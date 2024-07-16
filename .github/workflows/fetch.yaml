@@ -75,6 +75,10 @@ jobs:
       run: |
         python extract_ips.py
 
+    - name: Run IP replacing script
+      run: |
+        python replace_ips.py
+
     - name: Split proxies file
       run: |
         python split_file.py
