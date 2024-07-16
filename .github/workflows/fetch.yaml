@@ -1,4 +1,4 @@
-name: Update File
+name: Update File and Extract IPs
 
 on:
   workflow_dispatch:
@@ -15,17 +15,26 @@ jobs:
       run: |
         curl -s "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/configtg.txt" > proxies.txt
 
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Run IP extraction script
+      run: |
+        python extract_ips.py
+
     - name: Check for changes
       id: changes
       run: |
-            git diff --quiet && echo 'No changes' || echo '::set-output name=changed::true'   
+        git diff --quiet && echo 'No changes' || echo '::set-output name=changed::true'   
       
     - name: Commit and Push
       if: steps.changes.outputs.changed == 'true'   
       run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -A
-          timestamp=$(TZ='Asia/Tehran' date)
-          git commit -m "✅Updated on ${timestamp}"
-          git push
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add -A
+        timestamp=$(TZ='Asia/Tehran' date)
+        git commit -m "✅Updated on ${timestamp}"
+        git push
