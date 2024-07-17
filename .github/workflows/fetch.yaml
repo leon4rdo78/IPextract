@@ -15,6 +15,13 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Debug - List file contents
+      run: |
+        echo "Contents of unique_ips.txt:"
+        cat unique_ips.txt
+        echo "Contents of original_proxies.txt:"
+        cat original_proxies.txt
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
