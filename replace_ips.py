@@ -7,8 +7,10 @@ def read_unique_ips(file_path):
 def replace_ip_in_proxy(proxy_string, new_ip):
     # Regular expression to match the IP and port in the VLESS string
     pattern = r'@[^:]+:'
+    # Escape the new_ip to avoid issues with special characters
+    escaped_ip = re.escape(new_ip)
     # Replace the matched part with the new IP, preserving the '@' and ':'
-    return re.sub(pattern, f'@{new_ip}:', proxy_string)
+    return re.sub(pattern, f'@{escaped_ip}:', proxy_string)
 
 def main():
     # Read the unique IPs
