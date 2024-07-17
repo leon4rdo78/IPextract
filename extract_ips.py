@@ -1,63 +1,61 @@
+import re
+import ipaddress
 import base64
 import json
-import re
-import urllib.parse
 
-def extract_vmess_address(proxy):
-    try:
-        encoded_part = proxy.split('://')[1]
-        padding = '=' * (4 - len(encoded_part) % 4)
-        decoded_data = base64.b64decode(encoded_part + padding).decode('utf-8', errors='ignore')
-        decoded_json = json.loads(decoded_data)
-        return decoded_json.get('add')
-    except (IndexError, ValueError, json.JSONDecodeError):
-        print(f"Failed to extract address from vmess proxy: {proxy[:30]}...")
-        return None
-
-def extract_vless_address(proxy):
-    try:
-        parts = urllib.parse.urlparse(proxy)
-        return parts.hostname
-    except Exception:
-        print(f"Failed to extract address from vless proxy: {proxy[:30]}...")
-        return None
-
-def extract_shadowsocks_address(proxy):
-    try:
-        parts = proxy.split('@')
-        if len(parts) > 1:
-            address_part = parts[-1].split('#')[0]
-            return address_part.split(':')[0]
-    except Exception:
-        print(f"Failed to extract address from shadowsocks proxy: {proxy[:30]}...")
-    return None
-
-def process_proxies(input_file, output_file):
-    unique_addresses = set()
-
-    with open(input_file, 'r', encoding='utf-8') as f:
-        for line in f:
+def extract_unique_ips(file_path):
+    unique_ips = set()
+    
+    with open(file_path, 'r') as file:
+        for line in file:
             line = line.strip()
-            try:
-                if line.startswith('vless://'):
-                    address = extract_vless_address(line)
-                elif line.startswith('vmess://'):
-                    address = extract_vmess_address(line)
-                elif line.startswith('ss://'):
-                    address = extract_shadowsocks_address(line)
-                else:
-                    continue  # Skip other types of proxies
+            if line.startswith('vless://'):
+                ip = extract_vless_ip(line)
+            elif line.startswith('vmess://'):
+                ip = extract_vmess_ip(line)
+            else:
+                continue
+            
+            if ip:
+                try:
+                    ipaddress.ip_address(ip)
+                    unique_ips.add(ip)
+                except ValueError:
+                    print(f"Invalid IP address found: {ip}")
 
-                if address:
-                    unique_addresses.add(address)
-            except Exception as e:
-                print(f"Error processing line: {line[:30]}... Error: {str(e)}")
+    return sorted(unique_ips)
 
-    with open(output_file, 'w', encoding='utf-8') as f:
-        for address in sorted(unique_addresses):
-            f.write(f"{address}\n")
+def extract_vless_ip(vless_string):
+    ip_pattern = r'@(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):'
+    match = re.search(ip_pattern, vless_string)
+    return match.group(1) if match else None
 
-    print(f"Extracted {len(unique_addresses)} unique addresses to {output_file}")
+def extract_vmess_ip(vmess_string):
+    try:
+        # Remove 'vmess://' prefix and decode base64
+        decoded = base64.b64decode(vmess_string[8:]).decode('utf-8')
+        # Parse JSON
+        vmess_config = json.loads(decoded)
+        return vmess_config.get('add')
+    except Exception as e:
+        print(f"Error decoding VMess string: {e}")
+        return None
 
-# Run the script
-process_proxies('proxies.txt', 'unique_ips.txt')
+# Path to your input file
+input_file = 'proxies.txt'
+
+# Extract unique IPs
+unique_ip_list = extract_unique_ips(input_file)
+
+# Print the results
+print("Unique IP addresses:")
+for ip in unique_ip_list:
+    print(ip)
+
+# Optionally, write the results to a file
+output_file = 'unique_ips.txt'
+with open(output_file, 'w') as file:
+    for ip in unique_ip_list:
+        file.write(f"{ip}\n")
+
+print(f"\nUnique IP addresses have been saved to {output_file}")
