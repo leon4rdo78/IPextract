@@ -20,6 +20,11 @@ jobs:
       with:
         python-version: '3.x'
 
+    - name: Set up Git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
     - name: Fetch, decode if needed, and combine file content
       run: |
         # Function to safely append content to a file
