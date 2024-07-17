@@ -13,14 +13,14 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
-        fetch-depth: 0  # Fetch all history for all branches and tags
+        fetch-depth: 0
 
-    - name: Set up Git
-      run: |
-        git config --global user.name 'GitHub Action'
-        git config --global user.email 'action@github.com'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
 
     - name: Fetch, decode if needed, and combine file content
       run: |
@@ -90,77 +90,14 @@ jobs:
         done
 
         echo "Fetch and combine process completed."
-        
-        # Display the first few lines of proxies.txt to verify content
-        echo "First 10 lines of proxies.txt:"
-        head -n 10 proxies.txt
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-
-    - name: Archive existing split files
-      run: |
-        echo "Current directory structure:"
-        ls -R
-        # Create archive directory if it doesn't exist
-        mkdir -p split/archive
-
-        # Get current timestamp
-        TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-
-        # Check if there are files to archive
-        if [ "$(ls -A split/*.txt 2>/dev/null)" ]; then
-          # Create a subdirectory in the archive with the timestamp
-          mkdir -p "split/archive/$TIMESTAMP"
-          
-          # Move existing files to the archive
-          mv split/*.txt "split/archive/$TIMESTAMP/"
-          
-          echo "Archived existing files to split/archive/$TIMESTAMP/"
-        else
-          echo "No files to archive in split/ directory"
-        fi
-
-        # Clean up the split/ directory (just in case)
-        rm -f split/*.txt
-        
-        echo "Directory structure after archiving:"
-        ls -R
-
-    - name: Run IP extraction script
-      run: |
-        python extract_ips.py
+  - name: Run IP extraction script
+      run: python extract_ips.py
 
     - name: Run IP replacing script
-      run: |
-        python replace_ips.py
+      run: python replace_ips.py
 
-    - name: Split proxies file
+    - name: Commit and push if there are changes
       run: |
-        python split_file.py
-
-    - name: Commit and Push
-      if: steps.changes.outputs.changed == 'true'
-      run: |
-        echo "Current branch:"
-        git branch --show-current
-        
-        echo "Status before commit:"
-        git status
-        
-        # Commit changes
-        git commit -m "✅Updated on $(TZ='Asia/Tehran' date)"
-        
-        echo "Status after commit:"
-        git status
-        
-        # Fetch latest changes
-        git fetch origin main
-        
-        # Merge
-        git merge origin/main --no-edit
-        
-        echo "Status after merge:"
-        git status
+        git add proxies.txt unique_ips.txt new_proxies.txt
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update proxies and IPs" && git push)
