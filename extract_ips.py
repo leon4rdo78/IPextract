@@ -1,18 +1,36 @@
 import base64
 import json
 import re
+import urllib.parse
 
 def extract_vmess_address(proxy):
     try:
         encoded_part = proxy.split('://')[1]
-        # Try to decode with padding if necessary
         padding = '=' * (4 - len(encoded_part) % 4)
         decoded_data = base64.b64decode(encoded_part + padding).decode('utf-8', errors='ignore')
         decoded_json = json.loads(decoded_data)
         return decoded_json.get('add')
     except (IndexError, ValueError, json.JSONDecodeError):
-        print(f"Failed to extract address from vmess proxy: {proxy[:30]}...")  # Print first 30 chars for debugging
+        print(f"Failed to extract address from vmess proxy: {proxy[:30]}...")
         return None
+
+def extract_vless_address(proxy):
+    try:
+        parts = urllib.parse.urlparse(proxy)
+        return parts.hostname
+    except Exception:
+        print(f"Failed to extract address from vless proxy: {proxy[:30]}...")
+        return None
+
+def extract_shadowsocks_address(proxy):
+    try:
+        parts = proxy.split('@')
+        if len(parts) > 1:
+            address_part = parts[-1].split('#')[0]
+            return address_part.split(':')[0]
+    except Exception:
+        print(f"Failed to extract address from shadowsocks proxy: {proxy[:30]}...")
+    return None
 
 def process_proxies(input_file, output_file):
     unique_addresses = set()
