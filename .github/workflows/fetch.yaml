@@ -10,10 +10,8 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
@@ -91,7 +89,7 @@ jobs:
 
         echo "Fetch and combine process completed."
 
-  - name: Run IP extraction script
+    - name: Run IP extraction script
       run: python extract_ips.py
 
     - name: Run IP replacing script
