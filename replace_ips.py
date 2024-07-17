@@ -15,7 +15,7 @@ def main():
     unique_ips = read_unique_ips('unique_ips.txt')
 
     # Read the original proxy string
-    with open('original_proxy.txt', 'r') as file:
+    with open('original_proxies.txt', 'r') as file:
         original_proxy = file.read().strip()
 
     # Create new proxy strings with each unique IP
