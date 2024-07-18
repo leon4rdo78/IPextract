@@ -121,8 +121,17 @@ jobs:
 
     - name : Run IP replacement script
       run: python replace_ips.py
+
+    - name : split new proxies
+      run: split_file.py
       
     - name: Commit and push if there are changes
       run: |
         git add proxies.txt unique_add.txt new_proxies.txt
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Update proxies and IPs" && git push)
+        git add split/*.txt
+        if [ -f created_files.txt ]; then
+          while IFS= read -r file; do
+            git add "$file"
+          done < created_files.txt
+        fi
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update proxies and IPs, and split files" && git push)
