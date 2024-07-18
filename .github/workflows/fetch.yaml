@@ -97,7 +97,7 @@ jobs:
     - name: Archive, clear, and split new proxies
       run: python split_file.py
       
-    - name: List split directory contents before
+ - name: List split directory contents before
       run: ls -la split
 
     - name: Archive, clear, and split new proxies
@@ -109,6 +109,6 @@ jobs:
     - name: Commit and push if there are changes
       run: |
         git add proxies.txt unique_add.txt new_proxies.txt
-        git add split/*.txt
+        git add -A split/  # This will track deletions as well
         git add archive/**/*.txt
         git diff --quiet && git diff --staged --quiet || (git commit -m "Update proxies and IPs, archive old files, and create new split files" && git push)
