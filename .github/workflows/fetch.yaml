@@ -94,6 +94,9 @@ jobs:
     - name : archive delete and split new proxies
       run: python split_file.py
       
+    - name: Archive, clear, and split new proxies
+      run: python split_file.py
+      
     - name: Commit and push if there are changes
       run: |
         git add proxies.txt unique_add.txt new_proxies.txt
