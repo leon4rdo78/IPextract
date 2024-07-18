@@ -13,25 +13,17 @@ def archive_and_clear_split_dir(archive_dir='archive', split_dir='split'):
     
     # Create a new directory in archive with the timestamp
     archive_path = os.path.join(archive_dir, timestamp)
-    os.makedirs(archive_path, exist_ok=True)
     
-    # Move all files from split directory to the new archive directory
-    for filename in os.listdir(split_dir):
-        file_path = os.path.join(split_dir, filename)
-        if os.path.isfile(file_path):
-            shutil.move(file_path, os.path.join(archive_path, filename))
+    # If split directory exists, move it entirely to the archive
+    if os.path.exists(split_dir):
+        shutil.move(split_dir, archive_path)
+        print(f"Archived existing split directory to {archive_path}")
+    else:
+        print("No existing split directory to archive")
     
-    print(f"Archived existing files to {archive_path}")
-    
-    # Clear the split directory (just in case any directories remain)
-    for item in os.listdir(split_dir):
-        item_path = os.path.join(split_dir, item)
-        if os.path.isfile(item_path):
-            os.remove(item_path)
-        elif os.path.isdir(item_path):
-            shutil.rmtree(item_path)
-    
-    print("Cleared the split directory")
+    # Create a new empty split directory
+    os.makedirs(split_dir, exist_ok=True)
+    print("Created new empty split directory")
 
 def split_file(input_file, output_dir='split', max_lines=500):
     try:
