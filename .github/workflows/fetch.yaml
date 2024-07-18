@@ -121,5 +121,5 @@ jobs:
 
     - name: Commit and push if there are changes
       run: |
-        git add proxies.txt unique_ips.txt new_proxies.txt
+        git add proxies.txt unique_add.txt new_proxies.txt
         git diff --quiet && git diff --staged --quiet || (git commit -m "Update proxies and IPs" && git push)
