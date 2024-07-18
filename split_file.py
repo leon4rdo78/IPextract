@@ -15,33 +15,29 @@ def archive_and_clear_split_dir(archive_dir='archive', split_dir='split'):
     archive_path = os.path.join(archive_dir, timestamp)
     os.makedirs(archive_path, exist_ok=True)
 
-    # If split directory exists, archive its contents and then delete them
+    # If split directory exists, archive its contents
     if os.path.exists(split_dir):
         for item in os.listdir(split_dir):
             s = os.path.join(split_dir, item)
             d = os.path.join(archive_path, item)
             if os.path.isfile(s):
                 shutil.copy2(s, d)
-                os.remove(s)  # Delete the file from split directory
             elif os.path.isdir(s):
                 shutil.copytree(s, d, dirs_exist_ok=True)
-                shutil.rmtree(s)  # Delete the directory from split directory
         
         print(f"Archived existing split directory contents to {archive_path}")
-        print("Cleared the split directory")
     else:
         print("No existing split directory to archive")
-        os.makedirs(split_dir)  # Create split directory if it doesn't exist
 
-    # Double-check: remove any remaining files in split directory
-    for item in os.listdir(split_dir):
-        item_path = os.path.join(split_dir, item)
-        if os.path.isfile(item_path):
-            os.remove(item_path)
-        elif os.path.isdir(item_path):
-            shutil.rmtree(item_path)
+    # Clear the split directory by removing and recreating it
+    if os.path.exists(split_dir):
+        shutil.rmtree(split_dir)
+    os.makedirs(split_dir)
     
-    print("Ensured split directory is empty")
+    print("Cleared and recreated the split directory")
+
+    # Create a .gitkeep file in the empty split directory
+    open(os.path.join(split_dir, '.gitkeep'), 'a').close()
 
 def split_file(input_file, output_dir='split', max_lines=500):
     try:
