@@ -13,17 +13,31 @@ def archive_and_clear_split_dir(archive_dir='archive', split_dir='split'):
     
     # Create a new directory in archive with the timestamp
     archive_path = os.path.join(archive_dir, timestamp)
-    
-    # If split directory exists, move it entirely to the archive
+    os.makedirs(archive_path, exist_ok=True)
+
+    # If split directory exists, archive its contents and then delete them
     if os.path.exists(split_dir):
-        shutil.move(split_dir, archive_path)
-        print(f"Archived existing split directory to {archive_path}")
+        for item in os.listdir(split_dir):
+            s = os.path.join(split_dir, item)
+            d = os.path.join(archive_path, item)
+            if os.path.isdir(s):
+                shutil.copytree(s, d, dirs_exist_ok=True)
+            else:
+                shutil.copy2(s, d)
+        
+        # Remove all contents from the split directory
+        for item in os.listdir(split_dir):
+            s = os.path.join(split_dir, item)
+            if os.path.isdir(s):
+                shutil.rmtree(s)
+            else:
+                os.remove(s)
+        
+        print(f"Archived existing split directory contents to {archive_path}")
+        print("Cleared the split directory")
     else:
         print("No existing split directory to archive")
-    
-    # Create a new empty split directory
-    os.makedirs(split_dir, exist_ok=True)
-    print("Created new empty split directory")
+        os.makedirs(split_dir)  # Create split directory if it doesn't exist
 
 def split_file(input_file, output_dir='split', max_lines=500):
     try:
@@ -37,8 +51,6 @@ def split_file(input_file, output_dir='split', max_lines=500):
 
     total_lines = len(lines)
     num_files = math.ceil(total_lines / max_lines)
-
-    os.makedirs(output_dir, exist_ok=True)
 
     for i in range(num_files):
         start = i * max_lines
