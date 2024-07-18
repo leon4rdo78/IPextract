@@ -119,6 +119,9 @@ jobs:
     - name: Run IP extraction script
       run: python extract_ips.py
 
+    - name : Run IP replacement script
+      run: python replace_ips.py
+      
     - name: Commit and push if there are changes
       run: |
         git add proxies.txt unique_add.txt new_proxies.txt
