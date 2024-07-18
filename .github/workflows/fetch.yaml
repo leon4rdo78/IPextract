@@ -123,7 +123,7 @@ jobs:
       run: python replace_ips.py
 
     - name : split new proxies
-      run: split_file.py
+      run: python split_file.py
       
     - name: Commit and push if there are changes
       run: |
