@@ -44,7 +44,7 @@ def write_new_proxies(file_path, new_proxies):
             file.write(f"{proxy}\n")
 
 # File paths
-unique_ips_file = 'unique_ips.txt'
+unique_ips_file = 'unique_add.txt'
 original_proxy_file = 'original_proxies.txt'
 output_file = 'new_proxies.txt'
 
