@@ -85,6 +85,9 @@ jobs:
 
         echo "Fetch and combine process completed."
 
+    - name: Run no_dup script
+      run: python no_dup.py
+
     - name: Run IP extraction script
       run: python extract_ips.py
 
@@ -111,7 +114,7 @@ jobs:
       
     - name: Commit and push if there are changes
       run: |
-        git add proxies.txt unique_add.txt new_proxies.txt
+        git add proxies.txt unique_add.txt new_proxies.txt nodup_proxies.txt
         git add -A split/  # This will track deletions as well
         git add archive/**/*.txt
         git add -A splitorg/  # This will track deletions as well
