@@ -39,7 +39,7 @@ def archive_and_clear_split_dir(archive_dir='archive', split_dir='split'):
     # Create a .gitkeep file in the empty split directory
     open(os.path.join(split_dir, '.gitkeep'), 'a').close()
 
-def split_file(input_file, output_dir='split', max_lines=500):
+def split_file(input_file, output_dir='split', max_lines=300):
     try:
         with open(input_file, 'r', encoding='utf-8', errors='ignore') as file:
             lines = file.readlines()
