@@ -67,4 +67,4 @@ def splitorg_file(input_file, output_dir='splitorg', max_lines=300):
 
 if __name__ == "__main__":
     archiveorg_and_clear_splitorg_dir()
-    splitorg_file('proxies.txt')
+    splitorg_file('nodup_proxies.txt')
