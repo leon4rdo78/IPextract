@@ -67,4 +67,4 @@ def split_file(input_file, output_dir='split', max_lines=300):
 
 if __name__ == "__main__":
     archive_and_clear_split_dir()
-    split_file('new_proxies.txt')
+    split_file('new_nodup_proxies.txt')
