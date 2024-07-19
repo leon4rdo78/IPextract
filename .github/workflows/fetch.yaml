@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '41 2 * * *'
-  push:
-    branches: [ main ]
+# push:
+#    branches: [ main ]
 
 jobs:
   update:
@@ -47,7 +47,6 @@ jobs:
         # List of URLs to fetch from
         urls=(
           "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/configtg.txt"
-          "https://raw.githubusercontent.com/leon4rdo78/TGParse/main/configtg.txt"
           "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/irc.txt"
           "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/mci.txt"
           "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/mkb.txt"
