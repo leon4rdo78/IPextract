@@ -45,7 +45,7 @@ def write_new_proxies(file_path, new_proxies):
 
 # File paths
 unique_ips_file = 'unique_add.txt'
-original_proxy_file = 'original_nodup_proxies.txt'
+original_proxy_file = 'original_proxies.txt'
 output_file = 'new_nodup_proxies.txt'
 
 # Read input files
