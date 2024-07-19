@@ -39,7 +39,7 @@ def archiveorg_and_clear_splitorg_dir(archiveorg_dir='archiveorg', splitorg_dir=
     # Create a .gitkeep file in the empty splitorg directory
     open(os.path.join(splitorg_dir, '.gitkeep'), 'a').close()
 
-def splitorg_file(input_file, output_dir='splitorg', max_lines=500):
+def splitorg_file(input_file, output_dir='splitorg', max_lines=300):
     try:
         with open(input_file, 'r', encoding='utf-8', errors='ignore') as file:
             lines = file.readlines()
