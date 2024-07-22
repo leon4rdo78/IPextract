@@ -1,1 +1,1 @@
-vless://1d86846c-5a27-43c8-8981-57bb75c82195@2.189.59.6:443?encryption=none&security=tls&sni=vmx23.leon4rdo78.WorkErS.dEV&alpn=h2%2Chttp%2F1.1&fp=firefox&allowInsecure=1&type=ws&host=vmx23.leon4rdo78.WorkErS.dEV&path=%2Fiyjil.cfonni.info%3A443%2Fparadise#%F0%9F%87%AE%F0%9F%87%B7%2061-Vmix
+vless://cc771b27-27ad-4bf3-bc42-f42cd673edbe@2.189.59.2:443?encryption=none&security=tls&sni=vmx23.leon4rdo78.worKeRs.dEV&alpn=h3%2Ch2&fp=edge&allowInsecure=1&type=ws&host=vmx23.leon4rdo78.worKeRs.dEV&path=%2Fircp-617.pages.dev.%3A443%2F#%F0%9F%87%AE%F0%9F%87%B7%203701-Vmix
