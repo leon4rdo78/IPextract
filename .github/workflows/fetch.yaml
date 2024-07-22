@@ -57,6 +57,7 @@ jobs:
           "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/base64/vless"
           "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/normal/mix"
           "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/normal/donated"
+          "https://raw.githubusercontent.com/itsyebekhe/HiN-VPN/main/subscription/normal/mix"
         )
         
         # Fetch from each URL, decode if necessary, and append to proxies.txt
