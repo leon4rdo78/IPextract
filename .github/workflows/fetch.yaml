@@ -94,6 +94,9 @@ jobs:
 
     - name : Run IP replacement script
       run: python replace_ips.py
+
+    - name: Run splitbytype script
+      run: python splitbytype.py
       
     - name: List split directory contents before
       run: ls -la split
@@ -110,9 +113,9 @@ jobs:
     - name: Archive, clear, and split orgproxies
       run: python splitorg_file.py
 
-    - name: List split directory contents after
+    - name: List splitorg directory contents after
       run: ls -la splitorg
-      
+
     - name: Commit and push if there are changes
       run: |
         git add proxies.txt unique_add.txt new_proxies.txt nodup_proxies.txt
@@ -120,4 +123,5 @@ jobs:
         git add archive/**/*.txt
         git add -A splitorg/  # This will track deletions as well
         git add archiveorg/**/*.txt
+        git add -A splitbytype/  # This line includes the new output directory
         git diff --quiet && git diff --staged --quiet || (git commit -m "Update proxies and IPs, archive old files, and create new split files" && git push)
