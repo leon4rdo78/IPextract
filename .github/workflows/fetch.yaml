@@ -2,8 +2,8 @@ name: Update File and Extract IPs
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '41 2 * * *'
+  #schedule:
+    #- cron: '41 2 * * *'
 # push:
 #    branches: [ main ]
 
