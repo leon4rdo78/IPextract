@@ -53,29 +53,37 @@ def separate_configs(input_file, output_folder):
     cleanup_old_files(split_folder)
 
     print(f"Config separation complete. Files saved in {output_folder}")
+    print(f"Split files saved in {split_folder}")
 
 def split_configs(configs, config_type, split_folder):
     max_lines = 250
+    part_files = []
     for i in range(0, len(configs), max_lines):
         part_num = i // max_lines + 1
         output_file = os.path.join(split_folder, f"{config_type}-part{part_num}.txt")
+        part_files.append(output_file)
         with open(output_file, 'w') as f:
             for config in configs[i:i+max_lines]:
                 f.write(f"{config}\n")
+    print(f"Created {len(part_files)} part files for {config_type}")
+    return part_files
 
 def cleanup_old_files(folder):
-    # Get list of current files
-    current_files = set(os.listdir(folder))
-
     # Get list of all part files
     all_part_files = set(glob.glob(os.path.join(folder, "*-part*.txt")))
 
+    # Get list of current part files
+    current_part_files = set()
+    for config_type in ['vless', 'vmess']:
+        current_part_files.update(glob.glob(os.path.join(folder, f"{config_type}-part*.txt")))
+
     # Files to be deleted
-    files_to_delete = all_part_files - current_files
+    files_to_delete = all_part_files - current_part_files
 
     # Delete old files
     for file in files_to_delete:
         os.remove(file)
+        print(f"Deleted old file: {file}")
 
 if __name__ == "__main__":
     input_file = "nodup_proxies.txt"
