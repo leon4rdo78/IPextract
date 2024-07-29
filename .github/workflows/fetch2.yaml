@@ -125,9 +125,11 @@ jobs:
 
     - name: List splitbytype directory contents
       run: |
+        echo "Main splitbytype directory:"
         ls -la splitbytype
+        echo "Split subfolder:"
         ls -la splitbytype/split
-      
+        
     - name: List split directory contents before
       run: ls -la split
 
@@ -149,10 +151,10 @@ jobs:
     - name: Commit and push if there are changes
       run: |
         git add proxies.txt unique_add.txt new_proxies.txt nodup_proxies.txt
-        git add -A split/  # This will track deletions as well
+        git add -A split/
         git add archive/**/*.txt
-        git add -A splitorg/  # This will track deletions as well
+        git add -A splitorg/
         git add archiveorg/**/*.txt
-        git add -A splitbytype/  # This includes the main splitbytype directory
-        git add -A splitbytype/split/  # This includes the split subfolder
+        git add -A splitbytype/
+        git add -A splitbytype/split/
         git diff --quiet && git diff --staged --quiet || (git commit -m "Update proxies and IPs, archive old files, and create new split files" && git push)
