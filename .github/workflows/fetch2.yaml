@@ -1,0 +1,148 @@
+name: Update File and Extract IPs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 2 * * *'
+# push:
+#    branches: [ main ]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Set up Git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+    - name: Fetch, decode if needed, and combine file content
+      run: |
+        # Function to safely append content to a file
+        append_to_file() {
+          local content="$1"
+          local file="$2"
+          echo "$content" >> "$file"
+        }
+
+        # Initialize or clear the proxies.txt file
+        > proxies.txt
+        
+        # Function to check if a string is base64 encoded
+        is_base64() {
+          local string="$1"
+          echo "$string" | base64 -d > /dev/null 2>&1
+          return $?
+        }
+        
+        # List of URLs to fetch from
+        urls=(
+          "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/configtg.txt"
+          "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/irc.txt"
+          "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/mci.txt"
+          "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/mkb.txt"
+          "https://raw.githubusercontent.com/coldwater-10/Vpnclashfa/main/raw/hy2.txt"
+          "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/xray/normal/mix"
+          "https://raw.githubusercontent.com/yebekhe/V2Hub/main/merged"
+          "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/base64/vmess"
+          "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/base64/vless"
+          "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/normal/mix"
+          "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/sub/normal/donated"
+          "https://raw.githubusercontent.com/itsyebekhe/HiN-VPN/main/subscription/normal/mix"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/ss_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vmess_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/vless_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollectorVpnclashfa/main/trojan_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollector_mahsaserver/main/ss_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollector_mahsaserver/main/vmess_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollector_mahsaserver/main/vless_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollector_mahsaserver/main/trojan_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2RayAggregator/master/sub/sub_merge.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2ray-Config-Lite/main/All_Configs_Sub.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2ray-Config/main/All_Configs_Sub.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2ray-Configs/main/All_Configs_Sub.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollector/main/ss_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollector/main/vmess_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollector/main/vless_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2rayCollector/main/trojan_iran.txt"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub2/main/Split/Normal/vmess"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub/main/Split/Normal/vless"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub/main/Split/Normal/reality"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub1/main/Split/Normal/trojan"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub1/main/Split/Normal/shadowsocks"
+        )
+        
+        # Fetch from each URL, decode if necessary, and append to proxies.txt
+        for url in "${urls[@]}"; do
+          echo "Fetching from $url"
+          content=$(curl -s "$url")
+          if [ -n "$content" ]; then
+            if is_base64 "$content"; then
+              echo "Decoding Base64..."
+              decoded_content=$(echo "$content" | base64 -d 2>/dev/null)
+              if [ $? -eq 0 ]; then
+                append_to_file "$decoded_content" proxies.txt
+              else
+                echo "Failed to decode from $url"
+              fi
+            else
+              echo "raw content, moving on."
+              append_to_file "$content" proxies.txt
+            fi
+            # Add a newline after each file to separate content
+            append_to_file "" proxies.txt
+          else
+            echo "No content received from $url"
+          fi
+        done
+
+        echo "Fetch and combine process completed."
+
+    - name: Run no_dup script
+      run: python no_dup.py
+
+    - name: Run IP extraction script
+      run: python extract_ips.py
+
+    - name : Run IP replacement script
+      run: python replace_ips.py
+
+    - name: Run splitbytype script
+      run: python splitbytype.py
+      
+    - name: List split directory contents before
+      run: ls -la split
+
+    - name: Archive, clear, and split new proxies
+      run: python split_file.py
+
+    - name: List split directory contents after
+      run: ls -la split
+      
+    - name: List splitorg directory contents before
+      run: ls -la splitorg
+
+    - name: Archive, clear, and split orgproxies
+      run: python splitorg_file.py
+
+    - name: List splitorg directory contents after
+      run: ls -la splitorg
+
+    - name: Commit and push if there are changes
+      run: |
+        git add proxies.txt unique_add.txt new_proxies.txt nodup_proxies.txt
+        git add -A split/  # This will track deletions as well
+        git add archive/**/*.txt
+        git add -A splitorg/  # This will track deletions as well
+        git add archiveorg/**/*.txt
+        git add -A splitbytype/  # This line includes the new output directory
+        git diff --quiet && git diff --staged --quiet || (git commit -m "all done" && git push)
