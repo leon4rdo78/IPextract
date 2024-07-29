@@ -120,15 +120,15 @@ jobs:
     - name : Run IP replacement script
       run: python replace_ips.py
 
-    - name: Run splitbytype script
-      run: python splitbytype.py
+#    - name: Run splitbytype script
+      #run: python splitbytype.py
 
-    - name: List splitbytype directory contents
-      run: |
-        echo "Main splitbytype directory:"
-        ls -la splitbytype
-        echo "Split subfolder:"
-        ls -la splitbytype/split
+#    - name: List splitbytype directory contents
+      #run: |
+       # echo "Main splitbytype directory:"
+        #ls -la splitbytype
+        #echo "Split subfolder:"
+        #ls -la splitbytype/split
         
     - name: List split directory contents before
       run: ls -la split
