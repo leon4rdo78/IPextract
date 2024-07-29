@@ -122,6 +122,11 @@ jobs:
 
     - name: Run splitbytype script
       run: python splitbytype.py
+
+    - name: List splitbytype directory contents
+      run: |
+        ls -la splitbytype
+        ls -la splitbytype/split
       
     - name: List split directory contents before
       run: ls -la split
@@ -148,5 +153,6 @@ jobs:
         git add archive/**/*.txt
         git add -A splitorg/  # This will track deletions as well
         git add archiveorg/**/*.txt
-        git add -A splitbytype/  # This line includes the new output directory
-        git diff --quiet && git diff --staged --quiet || (git commit -m "all done" && git push)
+        git add -A splitbytype/  # This includes the main splitbytype directory
+        git add -A splitbytype/split/  # This includes the split subfolder
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update proxies and IPs, archive old files, and create new split files" && git push)
