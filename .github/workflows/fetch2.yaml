@@ -79,6 +79,10 @@ jobs:
           "https://raw.githubusercontent.com/coldwater-10/V2Hub/main/Split/Normal/reality"
           "https://raw.githubusercontent.com/coldwater-10/V2Hub1/main/Split/Normal/trojan"
           "https://raw.githubusercontent.com/coldwater-10/V2Hub1/main/Split/Normal/shadowsocks"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub3/main/merged"
+          "https://raw.githubusercontent.com/coldwater-10/V2Hub4/main/merged"
+          "https://raw.githubusercontent.com/Surfboardv2ray/Proxy-sorter/main/submerge/IR.txt"
+          "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/countries/ir/mixed"
         )
         
         # Fetch from each URL, decode if necessary, and append to proxies.txt
