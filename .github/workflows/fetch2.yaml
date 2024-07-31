@@ -2,8 +2,8 @@ name: Fetch, dedup, split, extract ip
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '49 2,8,14,20 * * *'
+  #schedule:
+    #- cron: '49 2,8,14,20 * * *'
 # push:
 #    branches: [ main ]
 
