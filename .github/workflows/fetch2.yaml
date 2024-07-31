@@ -120,18 +120,24 @@ jobs:
     - name : Run IP replacement script
       run: python replace_ips.py
 
-#    - name: Run splitbytype script
-      #run: python splitbytype.py
+    - name: Run splitbytype script
+      run: python splitbytype.py
 
-#    - name: List splitbytype directory contents
-      #run: |
-       # echo "Main splitbytype directory:"
-        #ls -la splitbytype
-        #echo "Split subfolder:"
-        #ls -la splitbytype/split
+    - name: List splitbytype directory contents
+      run: |
+        echo "Main splitbytype directory:"
+        ls -la splitbytype
+        echo "Split subfolder:"
+        ls -la splitbytype/split
         
     - name: List split directory contents before
       run: ls -la split
+    
+    - name: Run random line selector script
+      run: python ssrandom.py
+
+    - name: List splitbytype directory contents after random selection
+      run: ls -la splitbytype
 
     - name: Archive, clear, and split new proxies
       run: python split_file.py
@@ -157,4 +163,5 @@ jobs:
         git add archiveorg/**/*.txt
         git add -A splitbytype/
         git add -A splitbytype/split/
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Update proxies and IPs, archive old files, and create new split files" && git push)
+        git add splitbytype/ssrandom.txt
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update proxies and IPs, archive old files, create new split files, and add random selection" && git push)
